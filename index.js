@@ -13,7 +13,7 @@ const fileUpload = require('express-fileupload'); // simple middleware to upload
 // app.use(fileUpload());
 app.use(fileUpload({
     useTempFiles: true,
-    tempFileDir: "tmp/"
+    tempFileDir: "/tmp/"
 }));
 // database coonnect
 const connectDB = require("./config/database");

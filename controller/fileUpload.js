@@ -100,12 +100,22 @@ exports.videoUpload = async (req, res) => {
         const supportedType = ['mp4', 'mov'];
         const fileType = video.name.split('.')[1].toLowerCase();
 
-        if(!isFileTypeSupported(fileType, supportedType)) { // todo - add limit of 5mb
-            console.log("not supprted")
-            return res.status(500).json({
-                success : false,
-                message : "type wrong"
-            })
+        // file type check
+        if(!isFileTypeSupported(fileType, supportedType)) {
+            console.log("not supported");
+            return res.status(400).json({
+                success: false,
+                message: "File type not supported"
+            });
+        }
+
+        // ✅ file size check (5MB)
+        const maxSize = 5 * 1024 * 1024; // 5MB in bytes
+        if(video.size > maxSize) {
+            return res.status(400).json({
+                success: false,
+                message: "File size exceeds 5MB limit"
+            });
         }
 
         const response = await uploadFileToCloudinary(video, "fileUpload");
@@ -121,15 +131,15 @@ exports.videoUpload = async (req, res) => {
         res.json({
             success: true,
             message: "video upload success",
-            url : response.secure_url
+            url: response.secure_url
         });
 
     } catch (err) {
         console.log(err);
         res.status(500).json({
-            success : false,
-            messge : "errr in catch"
-        })
+            success: false,
+            messge: "errr in catch"
+        });
     }
 }
 
